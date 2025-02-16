@@ -16,7 +16,7 @@ public class Game {
         this.players=new ArrayList<>();
         this.rd=new Random();
         this.sc=sc;        
-        DiceAndMovement dc=new DiceAndMovement(players,sc,this.properties);
+        DiceAndMovement dc=new DiceAndMovement(players,sc,this.properties,this);
     }
 
     public void initializeGame(Scanner sc){
@@ -45,7 +45,7 @@ public class Game {
     private void createPlayers(Scanner sc){
         System.out.print("Enter your name: ");
         String name="bora";//sc.next();
-        players.add(new Player(name, false));
+        players.add(new Player(name, false,sc,this));
 
 
 
@@ -55,13 +55,17 @@ public class Game {
 
         for(int i=1;i<=playerCount;i++){
             int index=rd.nextInt(0,botNames.size());
-            players.add(new Player(botNames.get(index),true));
+            players.add(new Player(botNames.get(index),true,sc,this));
             botNames.remove(index);
         }
         for(int i=1;i<players.size();i++){
             botNames.add(players.get(i).getName());
         }
         
+    }
+
+    public int getTurnNo(){
+        return this.turnNo;
     }
 
 
