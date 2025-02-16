@@ -8,12 +8,15 @@ public class Game {
     private ArrayList<Property> properties;
     private ArrayList<Player> players;
     private Random rd;
+    private Scanner sc;
 
-    public Game(){
+    public Game(Scanner sc){
         this.turnNo=0;
         this.properties=new ArrayList<>();
         this.players=new ArrayList<>();
         this.rd=new Random();
+        this.sc=sc;        
+        DiceAndMovement dc=new DiceAndMovement(players,sc,this.properties);
     }
 
     public void initializeGame(Scanner sc){
@@ -22,21 +25,21 @@ public class Game {
     }
 
     private void createProperties() {
-        properties.add(new Property("0", 0, 0, 0, true,properties.size()));
+        properties.add(new Property("0", 0, 0, 0, 0,properties.size()));
         for(int i=65;i<=67;i++){
-            properties.add(new Property(Character.toString(i),2,1,1,false,properties.size()));
+            properties.add(new Property(Character.toString(i),2,1,1,1,properties.size()));
         }
-        properties.add(new Property("1", 0, 0, 0, true,properties.size()));
+        properties.add(new Property("1", 0, 0, 0, 0,properties.size()));
         for(int i=68;i<=70;i++){
-            properties.add(new Property(Character.toString(i),4,1,2,false,properties.size()));
+            properties.add(new Property(Character.toString(i),4,1,2,2,properties.size()));
         }
-        properties.add(new Property("2", 0, 0, 0, true,properties.size()));
+        properties.add(new Property("2", 0, 0, 0, 0,properties.size()));
         for(int i=71;i<=73;i++){
-            properties.add(new Property(Character.toString(i),4,1,2,false,properties.size()));
+            properties.add(new Property(Character.toString(i),4,1,2,3,properties.size()));
         }
-        properties.add(new Property("3", 0, 0, 0, true,properties.size()));
+        properties.add(new Property("3", 0, 0, 0, 0,properties.size()));
         for(int i=74;i<=76;i++){
-            properties.add(new Property(Character.toString(i),4,1,2,false,properties.size()));
+            properties.add(new Property(Character.toString(i),4,1,2,4,properties.size()));
         }
     }
     private void createPlayers(Scanner sc){
@@ -88,7 +91,7 @@ public class Game {
         for(int i=12;i>7;i--){
             line3+=properties.get(i).propertySecondLine(players);
         }
-        
+
         System.out.println(line1+line2+line3);
 
     }

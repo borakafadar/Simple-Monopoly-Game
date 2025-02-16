@@ -9,18 +9,107 @@ public class Property {
     private int propertyRent;
     private Player owner;
     private int index;
-    private boolean isSpecial;
+    private int type; //0=special, 1=A,B,C, 2=D,E,F, 3=G,H,I, 4=J,K,L
 
-    public Property(String name,int price,int houseCost,int rent,boolean special,int index){
+    public Property(String name,int price,int houseCost,int rent,int type,int index){
         this.index=index;
         this.propertyName=name;
         this.propertyPrice=price;
         this.houseCount=0;
         this.houseCost=houseCost;
         this.propertyRent=rent;
-        this.isSpecial=special;
+        this.type=type;
         this.owner=null;
     }
+
+    public Player getOwner(){
+        return this.owner;
+    }
+    public int getType(){
+        return this.type;
+    }
+    public String getName(){
+        return this.propertyName;
+    }
+    public int getPrice(){
+        return this.propertyPrice;
+    }
+    public int getHousePrice(){
+        return this.houseCost;
+    }
+    public void setOwner(Player pl){
+        this.owner=pl;    
+    }
+    public void addHouse(){
+        this.houseCount++;
+    }
+    public int getRent(){
+        return this.propertyRent;
+
+    }
+
+    public void setRent(){
+        switch(type){
+            case 1:
+                if(houseCount==1){
+                    this.propertyRent=2;
+                }
+                else if(houseCount==2){
+                    this.propertyRent=3;
+                }
+                else if(houseCount==3){
+                    this.propertyRent=4;
+                }
+                else if(houseCount==4){
+                    this.propertyRent=6;
+                }
+                break;
+            case 2:
+                if(houseCount==1){
+                    this.propertyRent=2;
+                }
+                else if(houseCount==2){
+                    this.propertyRent=3;
+                }
+                else if(houseCount==3){
+                    this.propertyRent=3;
+                }
+                else if(houseCount==4){
+                    this.propertyRent=7;
+                }
+                break;
+            case 3:
+                if(houseCount==1){
+                    this.propertyRent=3;
+                }
+                else if(houseCount==2){
+                    this.propertyRent=4;
+                }
+                else if(houseCount==3){
+                    this.propertyRent=6;
+                }
+                else if(houseCount==4){
+                    this.propertyRent=7;
+                }
+                break;
+            case 4:
+                if(houseCount==1){
+                    this.propertyRent=3;
+                }
+                else if(houseCount==2){
+                    this.propertyRent=6;
+                }
+                else if(houseCount==3){
+                    this.propertyRent=6;
+                }
+                else if(houseCount==4){
+                    this.propertyRent=9;
+                }
+                break;
+        }
+    }
+
+
 
     public String propertyFirstLine(){
         StringBuffer str1=new StringBuffer();
@@ -46,4 +135,5 @@ public class Property {
         str2.append("|");
         return str2.toString();
     }
+
 }
