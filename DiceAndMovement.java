@@ -7,14 +7,12 @@ public class DiceAndMovement {
     public Random rd;
     private ArrayList<Player> players;
     private ArrayList<Property> properties;
-    private Scanner sc;
     private Game currentGame;
 
     public DiceAndMovement(ArrayList<Player> players,Scanner sc,ArrayList<Property> properties,Game game){
         this.rd=new Random();
         this.players=players;
         this.properties=properties;
-        this.sc=sc;
         this.currentGame=game;
     }
 
@@ -23,11 +21,14 @@ public class DiceAndMovement {
     }
 
     public void zerothSpace(Player pl){
+        System.out.println( pl.getName()+" has landed in the start! Here is 3 coins for them.");
         pl.setCoins(pl.getCoins()+3);
     }
 
     public void firstSpace(Player pl){
+        System.out.println("Player "+pl.getName()+" has landed in Property 1! They are going to roll to trigger a special effect.");
         int selection=sixSidedDice(rd);
+        System.out.println("Their roll is "+selection);
         
         switch(selection){
             case 1:
@@ -60,6 +61,7 @@ public class DiceAndMovement {
     }
 
     public void secondSpace(Player pl){
+        System.out.println("Player "+ pl.getName()+" has landed in Property 2! They are going to get a coin from every other player.");
         for(Player pla : players){
             if(pla==pl){
                 continue;
@@ -73,6 +75,7 @@ public class DiceAndMovement {
     }
 
     public void thirdSpace(Player pl){
+        System.out.println("Player "+ pl.getName()+" has landed in Property 3! They are going to skip a turn.");
         pl.skipTurn();
     }
 
@@ -102,7 +105,7 @@ public class DiceAndMovement {
 
 
     public void move(Player pl){
-        if(pl.getSkipTurnNo()<currentGame.getTurnNo()){
+        if(pl.getSkipTurnNo()>currentGame.getTurnNo()){
             System.out.println("You still have to wait your turn "+pl.getName()+"!");
             return;
         }
@@ -112,7 +115,7 @@ public class DiceAndMovement {
             pl.setCoins(pl.getCoins()+3);
             toGoSpace=toGoSpace%16;
         }
-        pl.setSpace(pl.getCurrentSpace());
+        pl.setSpace(toGoSpace-1);
         System.out.println(pl.getName()+" moved for "+movement+" spaces.");
         checkSpace(pl);
     }
@@ -123,7 +126,7 @@ public class DiceAndMovement {
             pl.setCoins(pl.getCoins()+3);
             toGoSpace=toGoSpace%16;
         }
-        pl.setSpace(pl.getCurrentSpace());
+        pl.setSpace(toGoSpace);
         checkSpace(pl);
 
     }

@@ -38,17 +38,20 @@ public class Property {
         return this.houseCost;
     }
     public void setOwner(Player pl){
-        this.owner=pl;    
+        this.owner=pl;
+        this.houseCount=0;
+        setRent();    
     }
     public void addHouse(){
         this.houseCount++;
+        setRent();
     }
     public int getRent(){
         return this.propertyRent;
 
     }
 
-    public void setRent(){
+    private void setRent(){
         switch(type){
             case 1:
                 if(houseCount==1){
@@ -114,7 +117,7 @@ public class Property {
     public String propertyFirstLine(){
         StringBuffer str1=new StringBuffer();
         
-        String ownerName = this.owner!=null ? this.owner.getName() : ".";
+        String ownerName = this.owner!=null ? Character.toString(this.owner.getShortName()) : ".";
         String houses = this.owner!=null ? Integer.toString(this.houseCount) : ".";
         str1.append(this.propertyName+"."+ownerName+houses+"|");
         return str1.toString();
@@ -134,6 +137,19 @@ public class Property {
         }
         str2.append("|");
         return str2.toString();
+    }
+
+    public int getIndex(){
+        return this.index;
+    }
+
+    public int getHouseCount(){
+        return this.houseCount;
+    }
+
+    @Override
+    public String toString(){
+        return "The property "+ this.getName() +": Has "+this.houseCount+ " houses and its rent is "+getRent();
     }
 
 }

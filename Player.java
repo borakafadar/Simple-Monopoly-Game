@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Player {
-    //private static int playerNo=0;
+    
 
     private int coins;
     private String name;
@@ -25,6 +25,7 @@ public class Player {
         this.isBot=isBot;
         this.coins=10;
         this.currentSpace=0;
+        this.skipTurnNo=-1;
     }
 
 
@@ -37,11 +38,10 @@ public class Player {
             if(pr.getOwner()==null&&pr.getType()!=0){
                 System.out.println("Property "+pr.getName()+" is unowned!");
                 if(this.getCoins()>=pr.getPrice()){
-                    System.out.println("You can buy this property! To buy, type 1: ");
+                    System.out.print("You can buy this property! To buy, type 1: ");
                     String selection=sc.next();
                     if(selection.equals("1")){
                         this.buyProperty(pr);
-                        this.properties.add(pr);
                     }
                     else{
                         System.out.println("You did not buy the property.");
@@ -52,7 +52,7 @@ public class Player {
             }else if(pr.getOwner()==this){
                 System.out.println("You are the owner of property "+pr.getName());
                 if(this.getCoins()>pr.getHousePrice()){
-                    System.out.println("You can buy a house for this property! To buy type 1: ");
+                    System.out.print("You can buy a house for this property! To buy type 1: ");
                     String selection=sc.next();
                     if(selection.equals("1")){
                         pr.addHouse();
@@ -75,7 +75,6 @@ public class Player {
                     int randomNo=rd.nextInt(1,3);
                     if(randomNo==2){
                         this.buyProperty(pr);
-                        this.properties.add(pr);
                     }
     
                 }else{
@@ -93,8 +92,9 @@ public class Player {
                     }
                 }
             }else if(pr.getOwner()!=null&&pr.getOwner()!=this){
-                System.out.println(getName()+" have landed in "+pr.getOwner().getName()+"'s property."+getName() +"needs to pay "+pr.getRent()+" coins.");
+                System.out.println(getName()+" has landed in "+pr.getOwner().getName()+"'s property."+getName() +" needs to pay "+pr.getRent()+" coins.");
                 this.setCoins(this.getCoins()-pr.getRent());
+                pr.getOwner().setCoins(pr.getOwner().getCoins()+pr.getRent());
             }
             System.out.println(getName()+" has "+getCoins()+" coins.");
         }
@@ -103,16 +103,103 @@ public class Player {
 
     public void buyProperty(Property pr){
         pr.setOwner(this);
+        properties.add(pr);
         this.setCoins(this.getCoins()-pr.getPrice());
         System.out.println(this.getName()+" bought the property "+pr.getName()+"!");
     }
 
-    public void sellProperty(Property pr){
-        //todo
+    
+    public void sellProperty(){
+        Property toDeleteProperty=listAndSelectProperty();
+        if(toDeleteProperty==null){
+            return;
+        }
+        this.setCoins(this.getCoins()+toDeleteProperty.getPrice());
+        properties.remove(toDeleteProperty);
+        toDeleteProperty.setOwner(null);
+        System.out.println("You have sold the property "+toDeleteProperty.getName());
+
     }
 
+    public void sellProperty(int index){
+        Property toDeleteProperty=properties.get(index);
+        if(toDeleteProperty==null){
+            return;
+        }
+        this.setCoins(this.getCoins()+toDeleteProperty.getPrice());
+        toDeleteProperty.setOwner(null);
+        System.out.println(this.getName()+" has sold the property "+toDeleteProperty.getName());
+    }
+
+    public Property listAndSelectProperty(){
+        listProperties();
+        if(properties.size()==0){
+            return null;
+        }
+        System.out.print("Select one of the properties: ");
+        int selection=sc.nextInt()-1;
+        if(selection<0 || selection>=properties.size()){
+            System.out.println("This is not a valid selection!");
+            return null;
+        }
+        System.out.println("Property "+properties.get(selection).getName()+" has been selected!");
+        return properties.get(selection);
+    }
+
+    public void listProperties(){
+        if(properties.size()==0){
+            System.out.println("You do not have any properties!");
+            return;
+        }
+        for(int i=0;i<properties.size();i++){
+            System.out.println((i+1)+". "+properties.get(i).toString());
+            
+        }
+    }
+
+    public void deletePlayer(){
+        for(Property pr: properties){
+            pr.setOwner(null);
+        }
+    }
+
+    public void addHouse(){
+        
+        Property pr=null;
+        for(Property prop : properties){
+            if(prop.getIndex()==this.currentSpace){
+                pr=prop;
+            }
+        }
+        if(pr==null){
+            return;
+        }
+        if(this.getCoins()<pr.getHousePrice()){
+            System.out.println("You do not have money to build a house!");
+            return;
+        }
+        if(pr.getOwner()!=this){
+            System.out.println("You can't build a house for your opponent!");
+            return;
+        }
+        pr.addHouse();
+        this.setCoins(this.getCoins()-pr.getHousePrice());
+        System.out.println("A house has been added to the property "+pr.getName());
+    }
+
+    public int getTotalHouseNumber(){
+        int sum=0;
+        for(Property pr: properties){
+            sum+=pr.getHouseCount();
+        }
+        return sum;
+    } 
+
+
+
+
     public void skipTurn(){
-        this.skipTurnNo=currentGame.getTurnNo()+1;
+        this.skipTurnNo=currentGame.getTurnNo()+2;
     }
     public int getSkipTurnNo(){
         return this.skipTurnNo;
@@ -136,6 +223,13 @@ public class Player {
     }
     public void setSpace(int index){
         this.currentSpace=index;
+    }
+    public int getPropertyCount(){
+        return this.properties.size();
+    }
+
+    public boolean getBot(){
+        return this.isBot;
     }
 
 }

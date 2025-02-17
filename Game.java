@@ -9,6 +9,8 @@ public class Game {
     private ArrayList<Player> players;
     private Random rd;
     private Scanner sc;
+    private DiceAndMovement dc;
+    private final int LIMIT_POVERTY=1;
 
     public Game(Scanner sc){
         this.turnNo=0;
@@ -16,7 +18,7 @@ public class Game {
         this.players=new ArrayList<>();
         this.rd=new Random();
         this.sc=sc;        
-        DiceAndMovement dc=new DiceAndMovement(players,sc,this.properties,this);
+        dc=new DiceAndMovement(players,sc,this.properties,this);
     }
 
     public void initializeGame(Scanner sc){
@@ -44,13 +46,13 @@ public class Game {
     }
     private void createPlayers(Scanner sc){
         System.out.print("Enter your name: ");
-        String name="bora";//sc.next();
+        String name=sc.next();
         players.add(new Player(name, false,sc,this));
 
 
 
         System.out.print("How many players do you want to play against: ");
-        int playerCount=3;//sc.nextInt();
+        int playerCount=sc.nextInt();
         ArrayList<String> botNames = new ArrayList<>(Arrays.asList("Alice", "Bob", "Charlie", "David", "Emma", "Sophie", "Liam", "Noah", "Ethan", "Mia"));
 
         for(int i=1;i<=playerCount;i++){
@@ -61,7 +63,8 @@ public class Game {
         for(int i=1;i<players.size();i++){
             botNames.add(players.get(i).getName());
         }
-        
+        System.out.println();
+        System.out.println("--------------");
     }
 
     public int getTurnNo(){
@@ -96,7 +99,82 @@ public class Game {
             line3+=properties.get(i).propertySecondLine(players);
         }
 
-        System.out.println(line1+line2+line3);
+        System.out.println(line1+line2+line3+"");
+        
 
+    }
+
+    public void printPlayersAndStats(){
+        System.out.println();
+        for(int i=0;i<players.size();i++){
+            Player pl=players.get(i);
+            System.out.println((i+1)+". "+pl.getName()+": has "+pl.getPropertyCount()+" properties and "+pl.getCoins()+" coins.");
+        }
+    }
+
+    public void checkPlayers(){
+        for(int i=0;i<players.size();i++){
+            Player pl=players.get(i);
+            if(pl.getCoins()<0){
+                pl.deletePlayer();
+                System.out.println(pl.getName()+" has lost the game!");
+                players.remove(pl);
+                i--;
+            }
+        }
+    }
+
+
+    public void mainGame(){
+
+        boolean isWon=false;
+        while(turnNo<100){
+            printMap();
+            System.out.println("\nTurn Number: "+this.turnNo);
+            printPlayersAndStats();
+            
+            
+            for(Player pl : players){
+                System.out.println("\n--------------\n");
+                int currentHouseCount=pl.getTotalHouseNumber();
+                dc.move(pl);
+                if(properties.get(pl.getCurrentSpace()).getType()==0){
+                    continue;
+                }
+                if(currentHouseCount==pl.getTotalHouseNumber()){
+                    if(pl.getBot()==false){
+                        System.out.print("Do you want to sell a property?(y/n) ");
+                        String selection =sc.next();
+                        if(selection.equals("y")){
+                            pl.sellProperty();
+                        }else{
+                            System.out.println("Nothing happened. ");
+                        }
+                    }
+                    else{
+                        if(pl.getCoins()<=LIMIT_POVERTY&&pl.getPropertyCount()>0){
+                            int selection=rd.nextInt(0,pl.getPropertyCount());
+                            pl.sellProperty(selection);
+                        }
+                    }
+                }
+                
+            }
+            System.out.println("\n--------------");
+            checkPlayers();
+            if(players.size()==1){
+                isWon=true;
+                break;
+            }
+            turnNo++;
+        }
+
+        if(isWon){
+            System.out.println(players.get(0).getName()+" has won, congratulations!");
+        }
+        if(turnNo>=100){
+            System.out.println("Nobody won, the game ended in a tie.");
+        }
+        
     }
 }
