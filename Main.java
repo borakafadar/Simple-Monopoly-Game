@@ -11,9 +11,6 @@ public class Main {
         System.out.println("Welcome to Simple Monopoly!");
         System.out.println("Press enter to start!");
         sc.nextLine();
-        Game firstGame=new Game(sc);
-        firstGame.initializeGame(sc);
-        firstGame.mainGame();
         do{
             Game gm=new Game(sc);
             gm.initializeGame(sc);
@@ -22,7 +19,7 @@ public class Main {
             
             gm=null; //to kill the game
 
-            System.out.print("Do you want to play again? Enter n to quit.");
+            System.out.print("\n\nDo you want to play again? Enter n to quit.");
             
             String selection=sc.next();
             continueGame = selection.equals("n") ? false : true;

@@ -127,6 +127,7 @@ public class Player {
             return;
         }
         this.setCoins(this.getCoins()+toDeleteProperty.getPrice());
+        properties.remove(index);
         toDeleteProperty.setOwner(null);
         System.out.println(this.getName()+" has sold the property "+toDeleteProperty.getName());
     }
