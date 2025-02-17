@@ -1,6 +1,8 @@
 # Simple Monopoly Game
 
-_ps. this was an cs102 lab assignment_
+_ps. this was a cs102 lab assignment_
+
+_pps. finished in 7:20 hours_
 
 ## Simple Monopoly Game
 
